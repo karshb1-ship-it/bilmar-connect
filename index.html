@@ -349,6 +349,20 @@
           </div>
           <button class="btn small" data-tab="walk">Schedule</button>
         </div>
+        <div class="card">
+          <div class="kicker">FOR THIS VISIT</div>
+          <b>Anything special?</b>
+          <p class="lead">Ask for extra work or a recommendation before the crew arrives.</p>
+          <div class="chips">
+            <button class="special" data-special="Extra cleanup">Extra cleanup</button>
+            <button class="special" data-special="Plant recommendation">Plant recommendation</button>
+            <button class="special" data-special="Irrigation look">Irrigation look</button>
+            <button class="special" data-special="Something else">Something else</button>
+          </div>
+          <textarea id="special-note" rows="2" placeholder="Tell them what you want on this visit"></textarea>
+          <div style="height:10px"></div>
+          <button class="btn" id="send-special">Send with the next crew visit</button>
+        </div>
         <div class="steps">
           <button class="step" data-tab="requests"><span class="num">01</span><span><b>Take a photo</b><span>Send an issue with its location</span></span></button>
           <button class="step" data-tab="requests"><span class="num">02</span><span><b>Track requests</b><span>See every update without calling</span></span></button>
@@ -473,6 +487,22 @@
       app.querySelectorAll("[data-tab]").forEach(b => b.onclick = () => { state.tab = b.dataset.tab; state.hoa = ""; state.sheet = false; persist(); render(); });
       app.querySelectorAll("[data-role]").forEach(b => b.onclick = () => { state.role = b.dataset.role; state.tab = "home"; state.hoa = ""; persist(); render(); });
       app.querySelectorAll("[data-hoa]").forEach(b => b.onclick = () => { state.hoa = b.dataset.hoa; persist(); render(); });
+      const special = app.querySelector("#send-special");
+      if (special) special.onclick = () => {
+        const note = (app.querySelector("#special-note") || {}).value || "";
+        const ask = state.special || "Special request";
+        state.requests.unshift({ id: "BR-" + (1060 + state.requests.length), date: "Today", title: ask + (note ? " — " + note.slice(0, 48) : ""), where: "Next crew visit · Tue, Oct 13", status: "Received" });
+        state.toast = "Sent for the Tue, Oct 13 crew visit.";
+        state.tab = "requests";
+        persist(); render();
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "https://formsubmit.co/servicerequest@bilmarlandscape.com";
+        form.innerHTML = `<input name="_subject" value="Special request for next crew visit"><textarea name="message">${ask}\n${note}\nAttach to next crew visit Tue, Oct 13</textarea><input name="_captcha" value="false">`;
+        document.body.appendChild(form);
+        form.submit();
+      };
+      app.querySelectorAll(".special").forEach(b => b.onclick = () => { state.special = b.dataset.special; app.querySelectorAll(".special").forEach(x => x.classList.remove("on")); b.classList.add("on"); });
       const report = app.querySelector("#report");
       if (report) report.onclick = () => { state.sheet = true; persist(); render(); };
       const close = app.querySelector("#close");
