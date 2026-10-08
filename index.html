@@ -236,6 +236,9 @@
       return "";
     }
     function shell(body) {
+      const tabs = state.role === "bilmar"
+        ? ["home|C|Communities", "requests|R|Requests", "walk|S|Schedule", "approvals|M|Meetings", "history|R|Record"]
+        : ["home|H|Home", "requests|R|Requests", "walk|W|Walk", "approvals|A|Approvals", "history|H|History"];
       return `
         <header class="top">
           <div class="brand">
@@ -260,7 +263,7 @@
           <button class="avatar" id="profile" title="Jennifer M">JM</button>
         </header>
         <nav class="tabs">
-          ${["home|H|Home", "requests|R|Requests", "walk|W|Walk", "approvals|A|Approvals", "history|H|History"].map(item => {
+          ${tabs.map(item => {
             const [id, k, l] = item.split("|");
             return `<button data-tab="${id}" class="${state.tab === id ? "on" : ""}"><span class="k">${k}</span><span class="l">${l}</span></button>`;
           }).join("")}
@@ -269,22 +272,66 @@
         ${state.toast ? `<div class="toast">${state.toast}</div>` : ""}
       `;
     }
+    const hoas = [
+      { name: "Desert Willow", open: 2, next: "Tue, Oct 13", meeting: "Oct 22", requests: ["Yellow bells need attention", "Irrigation check"] },
+      { name: "Central Park", open: 1, next: "Thu, Oct 15", meeting: "Oct 22", requests: ["Six declining ash trees"] },
+      { name: "Eastern Ave", open: 0, next: "Tue, Oct 13", meeting: "Nov 19", requests: [] }
+    ];
     function bilmarHome() {
-      const hoas = [
-        { name: "Desert Willow", open: 2, next: "Tue, Oct 13", meeting: "Oct 22" },
-        { name: "Central Park", open: 1, next: "Thu, Oct 15", meeting: "Oct 22" },
-        { name: "Eastern Ave", open: 0, next: "Tue, Oct 13", meeting: "Nov 19" }
-      ];
       return shell(`
         <div class="kicker">BILMAR MANAGEMENT</div>
         <h1>All communities</h1>
-        <p class="lead">High level only. Open requests, next visit, and the next board meeting for each HOA.</p>
+        <p class="lead">Tap a community. Open requests, next visit, and the next board meeting.</p>
         ${hoas.map(h => `
-          <article class="card">
+          <button class="card hoa" data-hoa="${h.name}" style="width:100%;text-align:left">
             <div class="row"><b>${h.name}</b><span class="tag">${h.open} open</span></div>
             <div class="where">Next service ${h.next}</div>
             <div class="where">Board meeting ${h.meeting}</div>
-          </article>`).join("")}
+          </button>`).join("")}
+      `);
+    }
+    function bilmarDetail() {
+      const h = hoas.find(x => x.name === state.hoa) || hoas[0];
+      return shell(`
+        <button class="linkish" data-tab="home">All communities</button>
+        <h1>${h.name}</h1>
+        <article class="card"><b>${h.open} open requests</b><div class="where">${h.requests.join(" · ") || "None open"}</div></article>
+        <article class="card"><b>Next service</b><div class="where">${h.next}</div></article>
+        <article class="card"><b>Board meeting</b><div class="where">${h.meeting}</div></article>
+      `);
+    }
+    function bilmarRequests() {
+      return shell(`
+        <div class="kicker">ALL REQUESTS</div>
+        <h1>Open across communities</h1>
+        <article class="card"><div class="tag">Desert Willow</div><b>Yellow bells need attention</b><div class="where">Visit scheduled</div></article>
+        <article class="card"><div class="tag">Desert Willow</div><b>Irrigation check</b><div class="where">Thu, Oct 15</div></article>
+        <article class="card"><div class="tag">Central Park</div><b>Six declining ash trees</b><div class="where">Options being prepared · $12,600</div></article>
+      `);
+    }
+    function bilmarSchedule() {
+      return shell(`
+        <div class="kicker">SERVICE SCHEDULE</div>
+        <h1>This week</h1>
+        <article class="card"><b>Tue, Oct 13 · Enhancement crew</b><div class="where">Desert Willow and Eastern Ave</div></article>
+        <article class="card"><b>Thu, Oct 15 · Irrigation</b><div class="where">Central Park and Desert Willow</div></article>
+        <article class="card"><b>Walk with Jennifer</b><div class="where">${state.walk || "None booked yet"}</div></article>
+      `);
+    }
+    function bilmarMeetings() {
+      return shell(`
+        <div class="kicker">BOARD MEETINGS</div>
+        <h1>Coming up</h1>
+        <article class="card"><div class="tag">Thu, Oct 22 · 6:00 PM</div><b>Desert Willow and Central Park</b><div class="where">Ash tree recommendation is on the agenda.</div></article>
+        <article class="card"><div class="tag">Thu, Nov 19 · 6:00 PM</div><b>Eastern Ave</b><div class="where">Monthly landscape report.</div></article>
+      `);
+    }
+    function bilmarRecord() {
+      return shell(`
+        <div class="kicker">COMPLETED WORK</div>
+        <h1>Recent across communities</h1>
+        <article class="card"><div class="tag">Aug 12 · Eastern Ave</div><b>Irrigation leak repaired</b><div class="where">6 photos</div></article>
+        <article class="card"><div class="tag">Jul 29 · Central Park</div><b>Enhancement crew cycle</b><div class="where">21 photos</div></article>
       `);
     }
     function home() {
@@ -419,9 +466,13 @@
         app.innerHTML = `<div class="off"><div><img class="mark" src="logo.svg" alt="BILMAR" style="margin:0 auto 12px;display:block" /><h1>Portal paused</h1><p class="lead">This community app is turned off. Contact your BILMAR account manager.</p></div></div>`;
         return;
       }
-      const views = { home, requests, walk, approvals, history };
-      app.innerHTML = (views[state.tab] || home)() + sheet();
-      app.querySelectorAll("[data-role]").forEach(b => b.onclick = () => { state.role = b.dataset.role; state.tab = "home"; persist(); render(); });
+      const views = state.role === "bilmar"
+        ? { home: state.hoa ? bilmarDetail : bilmarHome, requests: bilmarRequests, walk: bilmarSchedule, approvals: bilmarMeetings, history: bilmarRecord }
+        : { home, requests, walk, approvals, history };
+      app.innerHTML = (views[state.tab] || views.home)() + sheet();
+      app.querySelectorAll("[data-tab]").forEach(b => b.onclick = () => { state.tab = b.dataset.tab; state.hoa = ""; state.sheet = false; persist(); render(); });
+      app.querySelectorAll("[data-role]").forEach(b => b.onclick = () => { state.role = b.dataset.role; state.tab = "home"; state.hoa = ""; persist(); render(); });
+      app.querySelectorAll("[data-hoa]").forEach(b => b.onclick = () => { state.hoa = b.dataset.hoa; persist(); render(); });
       const report = app.querySelector("#report");
       if (report) report.onclick = () => { state.sheet = true; persist(); render(); };
       const close = app.querySelector("#close");
