@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>BILMAR Connect</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="logo.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,520;9..144,640&family=Outfit:wght@380;460;560;640&display=swap" rel="stylesheet" />
+  <script>
+    window.BILMAR_LICENSE = {
+      active: true,
+      owner: "Your company",
+      client: "BILMAR Landscape Industries",
+      supportEmail: "servicerequest@bilmarlandscape.com"
+    };
+  </script>
+  <style>
+    :root {
+      --ink: #1a2a24;
+      --muted: #5d6b64;
+      --line: #e4ddd0;
+      --paper: #ffffff;
+      --card: #ffffff;
+      --pine: #1c3d32;
+      --pine-2: #275445;
+      --moss: #3e6b52;
+      --gold: #b08948;
+      --good: #1f7a4d;
+      --warn: #9a6230;
+      --bad: #8d3b32;
+      --shadow: 0 18px 40px rgba(28, 42, 36, 0.08);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: #ffffff;
+      color: var(--ink);
+      font-family: Outfit, "Segoe UI", sans-serif;
+      font-weight: 380;
+    }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    .stage {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 28px 16px;
+    }
+    .phone {
+      width: min(430px, 100%);
+      min-height: 100vh;
+      background: var(--paper);
+      border: 1px solid rgba(28, 42, 36, 0.08);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    @media (max-width: 520px) {
+      .stage { padding: 0; }
+      .phone { width: 100%; border: 0; box-shadow: none; min-height: 100vh; }
+    }
+    header.top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 18px 10px;
+      background: #ffffff;
+      border-bottom: 1px solid #eeeae2;
+    }
+    .brand { display: flex; gap: 12px; align-items: center; min-width: 0; }
+    .badge { width: 54px; height: 54px; flex: none; display: block; }
+    .word { min-width: 0; }
+    .word strong {
+      display: block; font-family: Fraunces, Georgia, serif; font-size: 22px;
+      letter-spacing: 0.08em; font-weight: 640; color: #1a1a1a; line-height: 1;
+    }
+    .word em {
+      display: block; margin-top: 4px; font-style: normal; font-size: 10px;
+      letter-spacing: 0.14em; color: #5c665f; font-weight: 560;
+    }
+    .role { display: flex; gap: 6px; margin-top: 6px; }
+    .role button { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 3px 8px; font-size: 11px; }
+    .role button.on { background: var(--pine); color: #fff; border-color: var(--pine); }
+    .community { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: #efe7d8; color: var(--pine);
+      display: grid; place-items: center; font-weight: 640; border: 1px solid var(--line);
+    }
+    nav.tabs {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 4px; padding: 8px 12px 12px;
+    }
+    nav.tabs button {
+      border: 0; background: transparent; color: var(--muted);
+      border-radius: 12px; padding: 8px 2px 7px;
+    }
+    nav.tabs button.on { background: #fff; color: var(--pine); box-shadow: 0 1px 0 var(--line); }
+    nav.tabs .k { display: block; font-size: 12px; font-weight: 640; }
+    nav.tabs .l { display: block; font-size: 11px; margin-top: 1px; }
+    main { padding: 6px 18px 36px; }
+    .kicker { font-size: 11px; letter-spacing: 0.16em; color: var(--gold); font-weight: 640; }
+    h1 {
+      font-family: Fraunces, Georgia, serif;
+      font-weight: 560; font-size: 34px; line-height: 1.05;
+      margin: 8px 0 10px; letter-spacing: -0.03em;
+    }
+    h1 em { font-style: italic; color: var(--pine-2); }
+    p.lead { color: var(--muted); margin: 0 0 16px; line-height: 1.45; }
+    .btn {
+      border: 0; background: var(--pine); color: #f7f4ee;
+      border-radius: 999px; padding: 12px 16px; font-weight: 560;
+    }
+    .btn.ghost { background: transparent; color: var(--pine); border: 1px solid var(--line); }
+    .btn.small { padding: 8px 12px; font-size: 13px; }
+    .btn.warn { background: #f4efe6; color: var(--warn); }
+    .btn.bad { background: #f8eeeC; color: var(--bad); }
+    .status {
+      margin-top: 18px; background: var(--card); border: 1px solid var(--line);
+      border-radius: 18px; padding: 16px; display: flex; justify-content: space-between; gap: 12px;
+    }
+    .status b { display: block; margin: 4px 0; font-size: 16px; }
+    .pill {
+      align-self: center; background: #e5f4eb; color: var(--good);
+      font-size: 11px; letter-spacing: 0.12em; font-weight: 640;
+      border-radius: 999px; padding: 7px 10px;
+    }
+    .steps { display: grid; gap: 8px; margin-top: 14px; }
+    .step {
+      text-align: left; width: 100%; background: var(--card); border: 1px solid var(--line);
+      border-radius: 16px; padding: 12px 14px; display: flex; gap: 12px; align-items: center;
+    }
+    .num {
+      width: 34px; height: 34px; border-radius: 10px; background: #efe8db; color: var(--pine);
+      display: grid; place-items: center; font-weight: 640; flex: none;
+    }
+    .step b { display: block; }
+    .step span { color: var(--muted); font-size: 13px; }
+    .section-label { margin: 22px 0 8px; font-size: 11px; letter-spacing: 0.16em; color: var(--muted); font-weight: 640; }
+    h2 { font-family: Fraunces, Georgia, serif; font-size: 26px; margin: 0 0 12px; font-weight: 560; }
+    .proof { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .shot {
+      border-radius: 14px; min-height: 108px; padding: 10px; color: #f7f4ee;
+      display: flex; flex-direction: column; justify-content: flex-end;
+    }
+    .shot small { letter-spacing: 0.12em; font-size: 10px; opacity: 0.8; }
+    .shot b { font-size: 13px; font-weight: 560; line-height: 1.2; }
+    .s1 { background: linear-gradient(160deg, #6d5844, #2d3a30); }
+    .s2 { background: linear-gradient(160deg, #4d6754, #24382e); }
+    .s3 { background: linear-gradient(160deg, #7d8a62, #2c4034); }
+    .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    .dow { text-align: center; font-size: 11px; color: var(--muted); }
+    .day { border: 1px solid var(--line); background: #fff; border-radius: 10px; padding: 8px 0; }
+    .day.on, .time.on { background: var(--pine); color: #fff; border-color: var(--pine); }
+    .card {
+      background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+      padding: 14px; margin-bottom: 10px;
+    }
+    .row { display: flex; justify-content: space-between; gap: 10px; align-items: start; }
+    .tag { font-size: 12px; color: var(--moss); font-weight: 560; }
+    .tag.done { color: var(--good); }
+    .tag.wait { color: var(--warn); }
+    .where { color: var(--muted); font-size: 13px; margin: 4px 0 8px; }
+    .linkish { border: 0; background: transparent; color: var(--pine); padding: 0; font-weight: 560; }
+    .slot {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 0; border-bottom: 1px solid var(--line);
+    }
+    .price { font-family: Fraunces, Georgia, serif; font-size: 28px; margin: 4px 0; }
+    .facts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 12px 0; }
+    .facts div { background: #f7f3ea; border-radius: 12px; padding: 10px; }
+    .facts small { color: var(--muted); letter-spacing: 0.08em; font-size: 10px; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .sheet {
+      position: absolute; inset: 0; background: rgba(22, 32, 28, 0.35);
+      display: flex; align-items: flex-end; z-index: 5;
+    }
+    .sheet .panel {
+      background: #fffcf7; width: 100%; border-radius: 22px 22px 0 0;
+      padding: 16px 18px 24px; max-height: 88%; overflow: auto;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+    .chips button { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 8px 12px; }
+    .chips button.on { background: var(--pine); color: #f7f4ee; border-color: var(--pine); }
+    textarea, input[type="text"] {
+      width: 100%; border: 1px solid var(--line); background: #fff; border-radius: 12px; padding: 10px 12px;
+    }
+    .hidden { display: none !important; }
+    .off {
+      min-height: 70vh; display: grid; place-items: center; text-align: center; padding: 28px;
+    }
+    .toast {
+      position: absolute; left: 16px; right: 16px; bottom: 16px;
+      background: var(--pine); color: #f7f4ee; border-radius: 14px; padding: 12px 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="phone" id="app"></div>
+  </div>
+  <script>
+    const license = window.BILMAR_LICENSE || { active: true, supportEmail: "servicerequest@bilmarlandscape.com" };
+    const seed = {
+      requests: [
+        { id: "BR-1048", date: "Aug 12", title: "Irrigation leak near east entrance", where: "Eastern Ave monument", status: "Completed" },
+        { id: "BR-1051", date: "Aug 14", title: "Six declining ash trees", where: "Central Park pathway", status: "Options being prepared" },
+        { id: "BR-1056", date: "Aug 18", title: "Yellow bells need attention", where: "Desert Willow cul-de-sac", status: "Visit scheduled" }
+      ],
+      history: [
+        { date: "Aug 12, 2026", title: "Irrigation leak repaired", note: "Before, during and after documentation · 6 photos" },
+        { date: "Aug 10, 2026", title: "Weekly property ambassador visit", note: "12 observations reviewed · no urgent conditions" },
+        { date: "Aug 5, 2026", title: "Tree health assessment", note: "Six ash trees added to monitoring plan · 8 photos" },
+        { date: "Jul 29, 2026", title: "Enhancement crew cycle completed", note: "Entrances, medians and Central Park serviced · 21 photos" }
+      ]
+    };
+    const saved = JSON.parse(localStorage.getItem("bilmar-connect") || "null");
+    const state = saved || { tab: "home", role: "hoa", requests: seed.requests, approval: "waiting", walk: null, sheet: false, category: "Irrigation leak", note: "", toast: "" };
+    const $ = (html) => html;
+    const app = document.getElementById("app");
+
+    function persist() {
+      localStorage.setItem("bilmar-connect", JSON.stringify(state));
+    }
+    function statusClass(s) {
+      if (s === "Completed") return "done";
+      if (s === "Visit scheduled") return "wait";
+      return "";
+    }
+    function shell(body) {
+      return `
+        <header class="top">
+          <div class="brand">
+            <svg class="badge" viewBox="0 0 64 64" aria-label="BILMAR Landscape Industries">
+              <rect width="64" height="64" rx="16" fill="#161616"/>
+              <path d="M10 16c12 5 28 4 42-6" fill="none" stroke="#c4383a" stroke-width="1.4"/>
+              <text x="32" y="30" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#ffffff" letter-spacing="1.2">BILMAR</text>
+              <text x="32" y="39" text-anchor="middle" font-family="Georgia, serif" font-size="3.6" fill="#ffffff" letter-spacing="0.8">LANDSCAPE</text>
+              <text x="32" y="44.5" text-anchor="middle" font-family="Georgia, serif" font-size="3.6" fill="#ffffff" letter-spacing="0.6">INDUSTRIES</text>
+              <path d="M14 50c10 6 22 7 34 1" fill="none" stroke="#2f9a52" stroke-width="2.2" stroke-linecap="round"/>
+              <path d="M46 40c3-4 7-4 9-1-3 1-6 3-9 1z" fill="#f7f7f7"/>
+            </svg>
+            <div class="word">
+              <strong>BILMAR</strong>
+              <em>LANDSCAPE INDUSTRIES</em>
+              <div class="role">
+                <button type="button" data-role="hoa" class="${state.role === "bilmar" ? "" : "on"}">HOA</button>
+                <button type="button" data-role="bilmar" class="${state.role === "bilmar" ? "on" : ""}">Bilmar</button>
+              </div>
+            </div>
+          </div>
+          <button class="avatar" id="profile" title="Jennifer M">JM</button>
+        </header>
+        <nav class="tabs">
+          ${["home|H|Home", "requests|R|Requests", "walk|W|Walk", "approvals|A|Approvals", "history|H|History"].map(item => {
+            const [id, k, l] = item.split("|");
+            return `<button data-tab="${id}" class="${state.tab === id ? "on" : ""}"><span class="k">${k}</span><span class="l">${l}</span></button>`;
+          }).join("")}
+        </nav>
+        <main>${body}</main>
+        ${state.toast ? `<div class="toast">${state.toast}</div>` : ""}
+      `;
+    }
+    function bilmarHome() {
+      const hoas = [
+        { name: "Desert Willow", open: 2, next: "Tue, Oct 13", meeting: "Oct 22" },
+        { name: "Central Park", open: 1, next: "Thu, Oct 15", meeting: "Oct 22" },
+        { name: "Eastern Ave", open: 0, next: "Tue, Oct 13", meeting: "Nov 19" }
+      ];
+      return shell(`
+        <div class="kicker">BILMAR MANAGEMENT</div>
+        <h1>All communities</h1>
+        <p class="lead">High level only. Open requests, next visit, and the next board meeting for each HOA.</p>
+        ${hoas.map(h => `
+          <article class="card">
+            <div class="row"><b>${h.name}</b><span class="tag">${h.open} open</span></div>
+            <div class="where">Next service ${h.next}</div>
+            <div class="where">Board meeting ${h.meeting}</div>
+          </article>`).join("")}
+      `);
+    }
+    function home() {
+      if (state.role === "bilmar") return bilmarHome();
+      return shell(`
+        <div class="kicker">BILMAR CONNECT</div>
+        <h1>See it. Send it.<br><em>We handle it.</em></h1>
+        <p class="lead">Report landscape concerns when you see them. BILMAR receives the photo, approximate location and property automatically.</p>
+        <button class="btn" id="report">Report an issue</button>
+        <div class="status">
+          <div>
+            <div class="kicker">SERVICE SCHEDULE</div>
+            <b>Next crew visit · Tue, Oct 13</b>
+            <div class="meta">Enhancement crew · entrances and medians. Irrigation check Thu, Oct 15.</div>
+          </div>
+          <button class="btn small" data-tab="walk">Schedule</button>
+        </div>
+        <div class="steps">
+          <button class="step" data-tab="requests"><span class="num">01</span><span><b>Take a photo</b><span>Send an issue with its location</span></span></button>
+          <button class="step" data-tab="requests"><span class="num">02</span><span><b>Track requests</b><span>See every update without calling</span></span></button>
+          <button class="step" data-tab="walk"><span class="num">03</span><span><b>Schedule a walk</b><span>Meet your BILMAR account manager</span></span></button>
+          <button class="step" data-tab="approvals"><span class="num">04</span><span><b>Review work</b><span>Photos, options and pricing together</span></span></button>
+        </div>
+        <div class="section-label">LATEST ACTIVITY</div>
+        <h2>Proof of service, not promises</h2>
+        <div class="proof">
+          <div class="shot s1"><small>BEFORE</small><b>Active irrigation leak</b></div>
+          <div class="shot s2"><small>DURING</small><b>Valve and lateral inspected</b></div>
+          <div class="shot s3"><small>AFTER</small><b>Repair tested and complete</b></div>
+        </div>
+        <div class="meta">Irrigation leak near east entrance<br>Completed Aug 12 · 6 field photos · BR-1048</div>
+      `);
+    }
+    function requests() {
+      return shell(`
+        <div class="kicker">SERVICE CENTER</div>
+        <h1>Your requests</h1>
+        <p class="lead">Every concern, response and photograph stays attached to your community.</p>
+        <button class="btn" id="report">New service request</button>
+        <div style="height:14px"></div>
+        ${state.requests.map(r => `
+          <article class="card">
+            <div class="row"><span class="tag">${r.id} · ${r.date}</span><span class="tag ${statusClass(r.status)}">${r.status}</span></div>
+            <b>${r.title}</b>
+            <div class="where">${r.where}</div>
+            <button class="linkish" data-tab="history">View timeline</button>
+          </article>`).join("")}
+      `);
+    }
+    function walk() {
+      const year = 2026, month = 9;
+      const first = new Date(year, month, 1).getDay();
+      const days = new Date(year, month + 1, 0).getDate();
+      const cells = Array(first).fill("").concat([...Array(days)].map((_, i) => i + 1));
+      const times = ["9:00 AM", "10:30 AM", "1:30 PM"];
+      return shell(`
+        <div class="kicker">PROPERTY WALK</div>
+        <h1>Schedule with Jennifer</h1>
+        <p class="lead">Pick a day and time. The request goes to Jennifer and to servicerequest@bilmarlandscape.com.</p>
+        <div class="section-label">OCTOBER 2026</div>
+        <div class="cal">
+          ${["S","M","T","W","T","F","S"].map(d => `<span class="dow">${d}</span>`).join("")}
+          ${cells.map(d => d ? `<button class="day ${state.day === d ? "on" : ""}" data-day="${d}">${d}</button>` : `<span></span>`).join("")}
+        </div>
+        <div class="section-label">TIME</div>
+        <div class="chips">${times.map(t => `<button class="time ${state.time === t ? "on" : ""}" data-time="${t}">${t}</button>`).join("")}</div>
+        <button class="btn" id="confirm-walk">Send to Jennifer</button>
+      `);
+    }
+    function approvals() {
+      const label = state.approval === "approved" ? "Approved by board" : state.approval === "declined" ? "Declined" : state.approval === "question" ? "Question sent" : "Waiting for board";
+      return shell(`
+        <div class="kicker">BOARD DECISIONS</div>
+        <h1>Recommendations and approvals</h1>
+        <p class="lead">The reason, location, photographs and price — together before the board decides.</p>
+        <div class="card">
+          <div class="tag">8 FIELD PHOTOS</div>
+          <div class="section-label">RECOMMENDATION BR-P218</div>
+          <h2>Replace six declining ash trees</h2>
+          <p class="lead">BILMAR recommends phased replacement before summer. There is no immediate safety concern.</p>
+          <div class="facts">
+            <div><small>PROPOSED COST</small><div class="price">$12,600</div></div>
+            <div><small>LOCATION</small><b>Central Park</b></div>
+            <div><small>RESPONSE DUE</small><b>Oct 22</b></div>
+          </div>
+          <div class="actions">
+            <button class="btn small" id="approve">Approve</button>
+            <button class="btn small bad" id="decline">Decline</button>
+            <button class="btn small warn" id="ask">Ask a question</button>
+          </div>
+          <div class="meta">${label}</div>
+        </div>
+        <div class="section-label">BOARD MEETINGS</div>
+        <article class="card"><div class="tag">Thu, Oct 22 · 6:00 PM</div><b>Board meeting</b><div class="where">Ash tree recommendation BR-P218 is on the agenda.</div></article>
+        <article class="card"><div class="tag">Thu, Nov 19 · 6:00 PM</div><b>Board meeting</b><div class="where">Monthly landscape report.</div></article>
+      `);
+    }
+    function history() {
+      return shell(`
+        <div class="kicker">PROPERTY RECORD</div>
+        <h1>Community history</h1>
+        <p class="lead">A permanent record of requests, repairs, recommendations and completed work.</p>
+        ${seed.history.map(h => `
+          <article class="card">
+            <div class="tag">${h.date}</div>
+            <b>${h.title}</b>
+            <div class="where">${h.note}</div>
+            <button class="linkish" data-open="h">Open</button>
+          </article>`).join("")}
+      `);
+    }
+    function sheet() {
+      if (!state.sheet) return "";
+      const cats = ["Irrigation leak", "Tree or plant concern", "Appearance request", "Safety concern"];
+      return `
+        <div class="sheet" id="sheet">
+          <div class="panel">
+            <div class="row"><div class="kicker">NEW SERVICE REQUEST</div><button class="linkish" id="close">Close</button></div>
+            <h2>What did you notice?</h2>
+            <div class="chips">
+              ${cats.map(c => `<button class="cat ${state.category === c ? "on" : ""}" data-cat="${c}">${c}</button>`).join("")}
+            </div>
+            <textarea id="note" rows="3" placeholder="Tell BILMAR what you see">${state.note || ""}</textarea>
+            <div class="slot"><span><b>Add a photo</b><div class="meta">Use camera or photo library</div></span><input id="photo" type="file" accept="image/*" capture="environment" /></div>
+            <div class="slot"><span><b>Pin location</b><div class="meta" id="pin">Not captured</div></span><button class="btn small ghost" id="geo">Use this phone</button></div>
+            <button class="btn" id="send">Send to servicerequest@bilmarlandscape.com</button>
+          </div>
+        </div>`;
+    }
+    function render() {
+      if (!license.active) {
+        app.innerHTML = `<div class="off"><div><img class="mark" src="logo.svg" alt="BILMAR" style="margin:0 auto 12px;display:block" /><h1>Portal paused</h1><p class="lead">This community app is turned off. Contact your BILMAR account manager.</p></div></div>`;
+        return;
+      }
+      const views = { home, requests, walk, approvals, history };
+      app.innerHTML = (views[state.tab] || home)() + sheet();
+      app.querySelectorAll("[data-role]").forEach(b => b.onclick = () => { state.role = b.dataset.role; state.tab = "home"; persist(); render(); });
+      const report = app.querySelector("#report");
+      if (report) report.onclick = () => { state.sheet = true; persist(); render(); };
+      const close = app.querySelector("#close");
+      if (close) close.onclick = () => { state.sheet = false; persist(); render(); };
+      app.querySelectorAll(".cat").forEach(b => b.onclick = () => { state.category = b.dataset.cat; persist(); render(); });
+      const note = app.querySelector("#note");
+      if (note) note.oninput = () => { state.note = note.value; };
+      const geo = app.querySelector("#geo");
+      if (geo) geo.onclick = () => {
+        const pin = app.querySelector("#pin");
+        if (!navigator.geolocation) { pin.textContent = "Location unavailable"; return; }
+        navigator.geolocation.getCurrentPosition(
+          p => { pin.textContent = p.coords.latitude.toFixed(5) + ", " + p.coords.longitude.toFixed(5); state.pin = pin.textContent; },
+          () => { pin.textContent = "Permission denied"; }
+        );
+      };
+      const send = app.querySelector("#send");
+      if (send) send.onclick = () => {
+        const id = "BR-" + (1060 + state.requests.length);
+        state.requests.unshift({ id, date: "Today", title: state.category + (state.note ? " — " + state.note.slice(0, 48) : ""), where: state.pin || "Community property", status: "Received" });
+        const body = encodeURIComponent(`${state.category}\n${state.note || ""}\nLocation: ${state.pin || "not captured"}\nProperty: community account`);
+        state.sheet = false; state.note = ""; state.tab = "requests";
+        state.toast = "Request " + id + " sent to servicerequest@bilmarlandscape.com.";
+        persist(); render();
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "https://formsubmit.co/servicerequest@bilmarlandscape.com";
+        form.innerHTML = `<input name="request" value="${id}"><input name="category" value="${state.category}"><textarea name="message">${body}</textarea><input name="_subject" value="BILMAR Connect ${id}"><input name="_captcha" value="false">`;
+        document.body.appendChild(form);
+        form.submit();
+        setTimeout(() => { state.toast = ""; persist(); render(); }, 3200);
+      };
+      app.querySelectorAll(".day").forEach(b => b.onclick = () => { state.day = Number(b.dataset.day); persist(); render(); });
+      app.querySelectorAll(".time").forEach(b => b.onclick = () => { state.time = b.dataset.time; persist(); render(); });
+      const confirm = app.querySelector("#confirm-walk");
+      if (confirm) confirm.onclick = () => {
+        if (!state.day || !state.time) { state.toast = "Pick a day and a time."; persist(); render(); return; }
+        const when = "October " + state.day + ", 2026 · " + state.time;
+        state.walk = when;
+        state.toast = "Walk request sent to Jennifer at servicerequest@bilmarlandscape.com.";
+        persist(); render();
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "https://formsubmit.co/servicerequest@bilmarlandscape.com";
+        form.innerHTML = `<input name="_subject" value="Walk with Jennifer"><textarea name="message">Schedule with Jennifer\n${when}</textarea><input name="_captcha" value="false">`;
+        document.body.appendChild(form);
+        form.submit();
+      };
+      const approve = app.querySelector("#approve");
+      if (approve) approve.onclick = () => { state.approval = "approved"; state.toast = "Approval recorded on this phone."; persist(); render(); setTimeout(() => { state.toast = ""; persist(); render(); }, 2200); };
+      const decline = app.querySelector("#decline");
+      if (decline) decline.onclick = () => { state.approval = "declined"; persist(); render(); };
+      const ask = app.querySelector("#ask");
+      if (ask) ask.onclick = () => { state.approval = "question"; window.location.href = `mailto:${license.supportEmail}?subject=Question on BR-P218`; persist(); render(); };
+      const profile = app.querySelector("#profile");
+      if (profile) profile.onclick = () => { state.toast = "Jennifer M · BILMAR account"; persist(); render(); setTimeout(() => { state.toast = ""; persist(); render(); }, 1800); };
+    }
+    render();
+  </script>
+</body>
+</html>
